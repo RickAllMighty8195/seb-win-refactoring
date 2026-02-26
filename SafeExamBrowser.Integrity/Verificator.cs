@@ -21,13 +21,13 @@ using SafeExamBrowser.UserInterface.Contracts;
 using SafeExamBrowser.UserInterface.Contracts.MessageBox;
 using SafeExamBrowser.UserInterface.Contracts.Shell;
 using SafeExamBrowser.UserInterface.Contracts.Windows;
-using SafeExamBrowser.WindowsApi.Contracts;
+using Windows.Networking.Connectivity;
 
 namespace SafeExamBrowser.Integrity
 {
 	public class Verificator : IVerificator
 	{
-		private const int AUTO_REFRESH_COUNT = 4;
+		private const int AUTO_REFRESH_COUNT = 5;
 		private const int MAX_ACTIVATIONS_PER_MINUTE = 5;
 
 		private static readonly string SESSION = Guid.NewGuid().ToString("N").ToUpper();
@@ -38,7 +38,6 @@ namespace SafeExamBrowser.Integrity
 		private readonly IIntegrityModule integrityModule;
 		private readonly ILogger logger;
 		private readonly IMessageBox messageBox;
-		private readonly INativeMethods nativeMethods;
 		private readonly ISystemInfo systemInfo;
 		private readonly IText text;
 		private readonly IUserInterfaceFactory uiFactory;
@@ -52,7 +51,6 @@ namespace SafeExamBrowser.Integrity
 			IIntegrityModule integrityModule,
 			ILogger logger,
 			IMessageBox messageBox,
-			INativeMethods nativeMethods,
 			ISystemInfo systemInfo,
 			IText text,
 			IUserInterfaceFactory uiFactory)
@@ -62,7 +60,6 @@ namespace SafeExamBrowser.Integrity
 			this.integrityModule = integrityModule;
 			this.logger = logger;
 			this.messageBox = messageBox;
-			this.nativeMethods = nativeMethods;
 			this.systemInfo = systemInfo;
 			this.text = text;
 			this.uiFactory = uiFactory;
@@ -71,7 +68,7 @@ namespace SafeExamBrowser.Integrity
 		public void Activate()
 		{
 			var canActivate = CanActivate();
-			var hasInternet = nativeMethods.HasInternetConnection();
+			var hasInternet = HasInternet();
 
 			if (canActivate && hasInternet)
 			{
@@ -191,6 +188,14 @@ namespace SafeExamBrowser.Integrity
 			};
 
 			return payload.ToString();
+		}
+
+		private bool HasInternet()
+		{
+			var profile = NetworkInformation.GetInternetConnectionProfile();
+			var hasInternet = profile?.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess;
+
+			return hasInternet;
 		}
 
 		private bool TryGenerateCode(string payload)

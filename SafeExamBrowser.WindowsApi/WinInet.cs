@@ -15,6 +15,13 @@ namespace SafeExamBrowser.WindowsApi
 	/// </summary>
 	internal static class WinInet
 	{
+		/// <summary>
+		/// This API has proven to be at least partially unreliably with respect to an actual connection to the internet,
+		/// see also https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetgetconnectedstate.
+		///
+		/// For determination of an actual connection to the internet consider using the Windows Runtime API,
+		/// see https://learn.microsoft.com/en-us/uwp/api/windows.networking.connectivity.networkinformation.
+		/// </summary>
 		[DllImport("wininet.dll", SetLastError = true)]
 		internal static extern bool InternetGetConnectedState(out int description, int reservedValue);
 	}

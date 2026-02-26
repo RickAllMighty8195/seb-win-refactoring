@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using SafeExamBrowser.Logging.Contracts;
 using SafeExamBrowser.SystemComponents.Contracts.Network;
 using SafeExamBrowser.SystemComponents.Contracts.Network.Events;
-using SafeExamBrowser.WindowsApi.Contracts;
 using Windows.Devices.Enumeration;
 using Windows.Devices.WiFi;
 using Windows.Foundation;
@@ -31,7 +30,6 @@ namespace SafeExamBrowser.SystemComponents.Network
 
 		private readonly ConcurrentDictionary<string, object> attempts;
 		private readonly ILogger logger;
-		private readonly INativeMethods nativeMethods;
 		private readonly List<WirelessNetwork> wirelessNetworks;
 
 		private WiFiAdapter adapter;
@@ -45,11 +43,10 @@ namespace SafeExamBrowser.SystemComponents.Network
 		public event ChangedEventHandler Changed;
 		public event CredentialsRequiredEventHandler CredentialsRequired;
 
-		public NetworkAdapter(ILogger logger, INativeMethods nativeMethods)
+		public NetworkAdapter(ILogger logger)
 		{
 			this.attempts = new ConcurrentDictionary<string, object>();
 			this.logger = logger;
-			this.nativeMethods = nativeMethods;
 			this.wirelessNetworks = new List<WirelessNetwork>();
 		}
 
@@ -340,7 +337,8 @@ namespace SafeExamBrowser.SystemComponents.Network
 			try
 			{
 				var currentNetwork = default(WirelessNetwork);
-				var hasConnection = nativeMethods.HasInternetConnection();
+				var connectionProfile = NetworkInformation.GetInternetConnectionProfile();
+				var hasConnection = connectionProfile?.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess;
 				var isConnecting = Status == ConnectionStatus.Connecting;
 				var networks = new List<WirelessNetwork>();
 				var previousStatus = Status;

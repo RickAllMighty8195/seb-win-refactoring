@@ -532,7 +532,7 @@
         Raise hand
     </Entry>
     <Entry key="Notification_VerificatorTooltip">
-        Generate QR Code for Verificator App
+        Show QR code for SEB Verificator
     </Entry>
     <Entry key="OperationStatus_CloseRuntimeConnection">
         Closing runtime connection

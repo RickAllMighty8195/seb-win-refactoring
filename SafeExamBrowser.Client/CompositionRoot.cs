@@ -114,7 +114,7 @@ namespace SafeExamBrowser.Client
 			messageBox = BuildMessageBox();
 			nativeMethods = new NativeMethods();
 			applicationMonitor = new ApplicationMonitor(TWO_SECONDS, ModuleLogger(nameof(ApplicationMonitor)), nativeMethods, processFactory);
-			networkAdapter = new NetworkAdapter(ModuleLogger(nameof(NetworkAdapter)), nativeMethods);
+			networkAdapter = new NetworkAdapter(ModuleLogger(nameof(NetworkAdapter)));
 			splashScreen = uiFactory.CreateSplashScreen();
 			systemInfo = new SystemInfo(new Registry(ModuleLogger(nameof(Registry))));
 			taskbar = uiFactory.CreateTaskbar(ModuleLogger("Taskbar"));
@@ -356,7 +356,7 @@ namespace SafeExamBrowser.Client
 			var audio = new Audio(context.Settings.Audio, ModuleLogger(nameof(Audio)));
 			var keyboard = new Keyboard(ModuleLogger(nameof(Keyboard)));
 			var logNotification = new LogNotification(logger, text, uiFactory);
-			var verificator = new Verificator(context.AppConfig, context.IntegrityModule, ModuleLogger(nameof(Verificator)), messageBox, nativeMethods, systemInfo, text, uiFactory);
+			var verificator = new Verificator(context.AppConfig, context.IntegrityModule, ModuleLogger(nameof(Verificator)), messageBox, systemInfo, text, uiFactory);
 			var verificatorNotification = new VerificatorNotification(text, verificator);
 			var operation = new ShellOperation(
 				actionCenter,
